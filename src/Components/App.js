@@ -10,11 +10,10 @@ import {
 import { Filter } from './Filter';
 import { ContactList } from './ContactList';
 import { ContactForm } from './ContactForm';
-import { useSelector } from 'react-redux';
+import { useFetchContactsQuery } from 'redux/contactsApi';
 
 export default function App() {
-  const contacts = useSelector(state => state.items);
-
+  const { data } = useFetchContactsQuery();
   return (
     <Phonebook>
       <ToastContainer />
@@ -24,7 +23,7 @@ export default function App() {
       </PhonebookContainer>
       <PhonebookContainer>
         <TitleContacts>Contacts</TitleContacts>
-        {contacts.length > 0 ? (
+        {data ? (
           <div>
             <Filter />
             <ContactList />
