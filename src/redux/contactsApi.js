@@ -9,6 +9,8 @@ export const contactsApi = createApi({
   endpoints: builder => ({
     fetchContacts: builder.query({
       query: () => `/contacts`,
+      validateStatus: (response, result) =>
+        response.status === 200 && !result.isError,
       providesTags: ['Contact'],
     }),
     deleteContact: builder.mutation({
