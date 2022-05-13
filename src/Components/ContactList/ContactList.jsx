@@ -7,7 +7,7 @@ import { useFetchContactsQuery } from 'redux/contactsApi';
 export const ContactList = () => {
   const { data } = useFetchContactsQuery();
 
-  const filter = useSelector(state => state.filter);
+  const filter = useSelector(state => state.filter.value);
   const normalizedFilterName = filter.toLowerCase();
   const filteredContacts = data.filter(contact =>
     contact.name.toLowerCase().includes(normalizedFilterName)

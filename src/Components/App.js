@@ -13,7 +13,9 @@ import { ContactForm } from './ContactForm';
 import { useFetchContactsQuery } from 'redux/contactsApi';
 
 export default function App() {
+
   const { data } = useFetchContactsQuery();
+
   return (
     <Phonebook>
       <ToastContainer />
@@ -23,14 +25,11 @@ export default function App() {
       </PhonebookContainer>
       <PhonebookContainer>
         <TitleContacts>Contacts</TitleContacts>
-        {data ? (
-          <div>
-            <Filter />
-            <ContactList />
-          </div>
+         {data && data.length> 1 && <Filter />}
+        {data?  ( <ContactList />
         ) : (
           <div>This is no contacts in Phonebook</div>
-        )}
+        )}   
       </PhonebookContainer>
     </Phonebook>
   );

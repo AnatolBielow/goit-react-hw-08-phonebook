@@ -20,7 +20,8 @@ export const ContactForm = () => {
       name,
       phone: formattedNumber(number),
     };
-    for (let i = 0; i < data.length; i++) {
+    if (data) {
+      for (let i = 0; i < data.length; i++) {
       const normalizedName = data[i].name.toLowerCase();
       const oldNumber = data[i].phone;
 
@@ -31,6 +32,8 @@ export const ContactForm = () => {
         return toast.error(`Sorry, but ${number} belongs to ${data[i].name}!`);
       }
     }
+    }
+    
     try {
       createContact(newContact);
       toast.success(`Contact ${name} is added to Phoonebook!`);
