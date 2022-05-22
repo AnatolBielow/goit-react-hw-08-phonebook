@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { PhonebookContainer, TitleContacts } from 'Components/Base.styled';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Avatar from '@mui/material/Avatar';

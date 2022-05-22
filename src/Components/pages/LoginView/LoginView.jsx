@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-// import { useLoginUserMutation } from 'redux/auth/authApi';
+import { useDispatch } from 'react-redux';
 import { Link } from './LoginView.styled';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
