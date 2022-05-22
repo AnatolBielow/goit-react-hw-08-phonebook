@@ -4,7 +4,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Name, Number } from './ContactItem.styled';
 import {
   Avatar,
-  Box,
   Grid,
   IconButton,
   ListItem,
@@ -13,7 +12,7 @@ import {
 
 export const Contact = ({ contact }) => {
   const { name, number, id } = contact;
-  const [deleteContact, { isLoading }] = useDeleteContactMutation();
+  const [deleteContact] = useDeleteContactMutation();
   const handleDelete = id => {
     deleteContact(id);
     toast.info(`Contact is deleted`);
