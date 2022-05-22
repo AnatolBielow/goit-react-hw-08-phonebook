@@ -1,15 +1,20 @@
 import React from 'react';
-import { ButtonSubmit, FormLabel, Icon } from './ContactForm.styled';
-import { AiOutlineUserAdd, AiOutlinePhone } from 'react-icons/ai';
 import { formattedNumber } from 'Helpers/formattedNumber';
 import { toast } from 'react-toastify';
 import {
   useCreateContactMutation,
   useFetchContactsQuery,
-} from 'redux/contactsApi';
+} from 'redux/contacts/conntactsApi';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 
 export const ContactForm = () => {
-  const { data } = useFetchContactsQuery();
+  const { data: contacts } = useFetchContactsQuery();
   const [createContact] = useCreateContactMutation();
 
   const handleSubmit = e => {
@@ -18,22 +23,24 @@ export const ContactForm = () => {
     const number = e.currentTarget.elements.number.value;
     const newContact = {
       name,
-      phone: formattedNumber(number),
+      number: formattedNumber(number),
     };
-    if (data) {
-      for (let i = 0; i < data.length; i++) {
-      const normalizedName = data[i].name.toLowerCase();
-      const oldNumber = data[i].phone;
+    if (contacts) {
+      for (let i = 0; i < contacts.length; i++) {
+        const normalizedName = contacts[i].name.toLowerCase();
+        const oldNumber = contacts[i].number;
 
-      if (newContact.name.toLowerCase() === normalizedName) {
-        return toast.error(`Sorry, but ${name} is already in contacts!`);
-      }
-      if (newContact.phone === oldNumber) {
-        return toast.error(`Sorry, but ${number} belongs to ${data[i].name}!`);
+        if (newContact.name.toLowerCase() === normalizedName) {
+          return toast.error(`Sorry, but ${name} is already in contacts!`);
+        }
+        if (newContact.number === oldNumber) {
+          return toast.error(
+            `Sorry, but ${number} belongs to ${contacts[i].name}!`
+          );
+        }
       }
     }
-    }
-    
+
     try {
       createContact(newContact);
       toast.success(`Contact ${name} is added to Phoonebook!`);
@@ -44,31 +51,56 @@ export const ContactForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormLabel htmlFor="name">Name</FormLabel>
-      <input
-        type="text"
-        name="name"
-        pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-        title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-        required
-      />
-      <Icon>
-        <AiOutlineUserAdd />
-      </Icon>
-
-      <FormLabel htmlFor="number">Number</FormLabel>
-      <input
-        type="tel"
-        name="number"
-        pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-        title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-        required
-      />
-      <Icon>
-        <AiOutlinePhone />
-      </Icon>
-      <ButtonSubmit type="submit">Submit</ButtonSubmit>
-    </form>
+    <Container maxWidth="xs">
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <PersonAddAltRoundedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Add Contact
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            size="small"
+            id="name"
+            label="Name"
+            name="name"
+            autoComplete="name"
+            autoFocus
+            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            size="small"
+            name="number"
+            label="Phone number"
+            type="phone"
+            id="number"
+            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Add Contact
+          </Button>
+        </Box>
+      </Box>
+    </Container>
   );
 };

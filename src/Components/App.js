@@ -1,32 +1,73 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {
-  Phonebook,
-  PhonebookContainer,
-  Title,
-  TitleContacts,
-} from './Base.styled';
-import { Filter } from './Filter';
-import { ContactList } from './ContactList';
-import { ContactForm } from './ContactForm';
-import { useFetchContactsQuery } from 'redux/contactsApi';
+import { RegisterView } from './pages/RegisterViev';
+import { LoginView } from './pages/LoginView';
+import { Route, Routes } from 'react-router-dom';
+import { HomeView } from './pages/Home/HomeView';
+import { ContactsView } from './pages/ContactsView';
+import { PrivateRoute, PublicRoute } from './Routes';
+import { ThemeProvider } from '@mui/material';
+import theme from './theme';
+import Layout from './Layout/Layout';
+import { useDispatch, useSelector } from 'react-redux';
+import authOperiation from 'redux/auth/auth-operation';
+import authSelectors from 'redux/auth/auth-selectors';
 
 export default function App() {
-  const { data } = useFetchContactsQuery();
+  const dispatch = useDispatch();
+  const isFetchingCurrentUser = useSelector(
+    authSelectors.getFetchingCurrentUser
+  );
+  useEffect(() => {
+    dispatch(authOperiation.fetchCurrentUser());
+  }, [dispatch]);
 
   return (
-    <Phonebook>
-      <ToastContainer />
-      <PhonebookContainer>
-        <Title>Phonebook</Title>
-        <ContactForm />
-      </PhonebookContainer>
-      <PhonebookContainer>
-        <TitleContacts>Contacts</TitleContacts>
-        {data && data.length > 1 && <Filter />}
-        {data ? <ContactList /> : <div>This is no contacts in Phonebook</div>}
-      </PhonebookContainer>
-    </Phonebook>
+    !isFetchingCurrentUser && (
+      <>
+        <ThemeProvider theme={theme}>
+          <ToastContainer />
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route
+                index
+                element={
+                  <PublicRoute redirect='/contacts'>
+                    <HomeView />
+                  </PublicRoute>
+                }
+              />
+
+              <Route
+                path="register"
+                element={
+                  <PublicRoute restricted redirect='/contacts'>
+                    <RegisterView />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="login"
+                element={
+                  <PublicRoute restricted redirect='/contacts'>
+                    <LoginView />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/contacts"
+                element={
+                  <PrivateRoute redirect='/login'>
+                    <ContactsView />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="*" element={<HomeView />} />
+            </Route>
+          </Routes>
+        </ThemeProvider>
+      </>
+    )
   );
 }
